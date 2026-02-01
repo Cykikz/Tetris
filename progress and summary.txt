@@ -1,0 +1,52 @@
+Tetris project – summary
+Tech stack
+Python 3 – main language
+Pygame – window, drawing, input, mixer
+Standard library – random, os, math, array (no numpy or other extra deps)
+requirements.txt – pygame>=2.5.0
+Project structure
+tetris.py – single file: game logic, drawing, sound, main loop
+highscore.txt – created at runtime next to the script; stores best score
+.vscode/settings.json – editor config (optional)
+Game mechanics
+Grid – 10×20, standard Tetris well
+Pieces – 7 tetrominoes (I, O, T, S, Z, L, J), each with 4 rotations stored as 2D matrices
+Movement – left/right, rotate (up), soft drop (down), hard drop (space), hold (C), pause (P)
+Ghost piece – semi-transparent preview of landing position
+Lock delay – 0.5 s after landing before lock; moving/rotating resets the timer (“slide”)
+Spawning – piece centered using bounding box (handles I vertical, etc.)
+Scoring & level
+Line clear – 100 / 300 / 500 / 800 × level for 1 / 2 / 3 / 4 lines (Nintendo-style)
+Soft drop – 1 pt per row
+Hard drop – 2 pts per row dropped
+Level – +1 every 10 lines; fall speed increases (faster until a minimum)
+High score – best score saved in highscore.txt
+GUI (minimal)
+Window – 380×600 px
+Play area – 260×520 (block size 26), thin 1px border
+Sidebar – right side: HOLD, NEXT (previews), SCORE, BEST, LEVEL, LINES, “P Pause”
+Colors – dark theme: BG, GRID_BG, GRID_LINE, SIDEBAR_BG, TEXT, TEXT_MUTED, ACCENT
+Blocks – flat rects, 1px outline; ghost = same with lower alpha
+Overlays – game over / pause: dimmed background + centered text only (no panels)
+Sound
+Source – generated in code (sine waves via math.sin + array.array("h")), no WAV files
+Mixer – 22050 Hz, 16-bit, mono; pygame.mixer.pre_init then pygame.mixer.init
+Events – move, rotate, hard drop, line clear, level up, game over
+Fallback – if init fails, play() does nothing; game still runs
+Data & logic
+State – one dict: locked positions, current/next/hold shape indices, rotation, position, score, level, lines, fall/lock timers
+Collision – valid_position(shape, x, y, locked)
+Line clear – find full rows, remove them, shift above rows down, then update score/level
+Spawn X – get_spawn_x(matrix) from bounding box so every rotation spawns centered
+Controls (as in game)
+Key	Action
+← →	Move
+↑	Rotate
+↓	Soft drop
+Space	Hard drop
+C	Hold
+P	Pause
+Space (game over)	Restart
+Run
+pip install -r requirements.txtpython tetris.py
+That’s everything used in the project so far in one place.
